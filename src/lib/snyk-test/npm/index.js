@@ -14,6 +14,7 @@ const common = require('../common');
 const fileSystem = require('fs');
 const lockFileParser = require('snyk-nodejs-lockfile-parser');
 const detect = require('../../detect');
+const depGraphLib = require('snyk-dep-graph');
 
 module.exports = test;
 
@@ -74,11 +75,19 @@ function test(root, options) {
               modules = pkg;
               return pkg;
             });
-        }).then((pkg) => {
+        }).then(async (pkg) => {
           // if there's no package name, let's get it from the root dir
           if (!pkg.name) {
             pkg.name = path.basename(path.resolve(root));
           }
+
+          console.log('KOKO writing npm pkg-tree to file');
+          fs.writeFileSync('/tmp/test-npm-pkgtree.json', JSON.stringify(pkg));
+
+          console.log('KOKO writing npm graph json to file');
+          const depGraph = await depGraphLib.legacy.depTreeToGraph(pkg, 'npm');
+          fs.writeFileSync('/tmp/test-npm-graph.json', JSON.stringify(depGraph.toJSON()));
+
           policyLocations = policyLocations.concat(pluckPolicies(pkg));
           debug('policies found', policyLocations);
           analytics.add('policies', policyLocations.length);

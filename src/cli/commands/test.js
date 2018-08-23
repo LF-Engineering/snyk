@@ -354,8 +354,9 @@ function createRemediationText(vuln, packageManager) {
 
   if (vuln.isFixable === true) {
     var upgradePathsArray = _.uniq(vuln.list.map(function (v) {
-      var shouldUpgradeItself = !!v.upgradePath[0];
-      var shouldUpgradeDirectDep = !!v.upgradePath[1];
+
+      var shouldUpgradeItself = v.isUpgradable && !!v.upgradePath[0];
+      var shouldUpgradeDirectDep = v.isUpgradable && !!v.upgradePath[1];
 
       if (shouldUpgradeItself) {
         // If we are testing a library/package like express
@@ -458,6 +459,7 @@ function metaForDisplay(res, options) {
   var packageManager = options.packageManager || res.packageManager;
   var openSource = res.isPrivate ? 'no' : 'yes';
   var meta = [
+    // TODO: fix this
     chalk.bold(rightPadWithSpaces('Organisation: ', padToLength)) + res.org,
     chalk.bold(rightPadWithSpaces('Package manager: ', padToLength)) + packageManager,
   ];
