@@ -14,7 +14,7 @@ const common = require('../common');
 const fileSystem = require('fs');
 const lockFileParser = require('snyk-nodejs-lockfile-parser');
 const detect = require('../../detect');
-const depGraphLib = require('snyk-dep-graph');
+const depGraphLib = require('@snyk/dep-graph');
 
 module.exports = test;
 

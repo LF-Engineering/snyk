@@ -8,7 +8,7 @@ var os = require('os');
 var _ = require('lodash');
 var isCI = require('./is-ci');
 var analytics = require('./analytics');
-var {DepGraph} = require('snyk-dep-graph');
+var {DepGraph} = require('@snyk/dep-graph');
 
 function monitor(root, meta, info) {
   var pkg = info.package;

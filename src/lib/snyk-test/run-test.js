@@ -5,7 +5,7 @@ var debug = require('debug')('snyk');
 var fs = require('then-fs');
 var moduleToObject = require('snyk-module');
 var pathUtil = require('path');
-var depGraphLib = require('snyk-dep-graph');
+var depGraphLib = require('@snyk/dep-graph');
 
 var analytics = require('../analytics');
 var config = require('../config');
@@ -79,8 +79,8 @@ function runTest(packageManager, root, options) {
 
         // TODO: make sure the way you handle null versions is the same here and in vuln
         let upgradePathsMap = [];
-        Object.keys(result.affectedDeps).forEach(function (depId) {
-          const issues = result.affectedDeps[depId].issues;
+        Object.keys(result.affectedPkgs).forEach(function (pkgId) {
+          const issues = result.affectedPkgs[pkgId].issues;
           Object.keys(issues).forEach(function (issueId) {
             if (issues[issueId].fixInfo) {
               issues[issueId].fixInfo.upgradePaths.forEach(function (upgradePath) {
@@ -95,10 +95,10 @@ function runTest(packageManager, root, options) {
         });
 
         legacyRes.vulnerabilities = [];
-        Object.keys(result.affectedDeps).forEach(function (depId) {
-          const dep = result.affectedDeps[depId].dep;
-          const depIssues = result.affectedDeps[depId].issues;
-          const vulnPaths = depGraphRes.depGraph.pkgPathsToRoot(dep);
+        Object.keys(result.affectedPkgs).forEach(function (pkgId) {
+          const pkg = result.affectedPkgs[pkgId].pkg;
+          const depIssues = result.affectedPkgs[pkgId].issues;
+          const vulnPaths = depGraphRes.depGraph.pkgPathsToRoot(pkg);
           vulnPaths.forEach(function (vulnPath) {
             Object.keys(depIssues).forEach(function (issueId) {
               const vulnPathNonGraphFormat = getVulnPathNonGraphFormat(vulnPath);
@@ -121,8 +121,8 @@ function runTest(packageManager, root, options) {
               partialIssue.from = vulnPathNonGraphFormat;
               partialIssue.isUpgradable = !upgradePath ? false : (!!upgradePath[0] || !!upgradePath[1]);
               partialIssue.isPatchable = depIssues[issueId].fixInfo.isPatchable, // TODO: test this
-              partialIssue.name = dep.name;
-              partialIssue.version = dep.version;
+              partialIssue.name = pkg.name;
+              partialIssue.version = pkg.version;
               legacyRes.vulnerabilities.push(partialIssue);
             });
           });
