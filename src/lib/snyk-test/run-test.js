@@ -245,9 +245,10 @@ function assembleLocalPayload(root, options, policyLocations, depGraphRes) {
         pkg.docker = pkg.docker || {};
         pkg.docker.baseImage = options['base-image'];
       }
-      // TODO: handle ruby
 
+      console.time('depTreeToGraph');
       depGraph = await depGraphLib.legacy.depTreeToGraph(info.package, options.packageManager);
+      console.timeEnd('depTreeToGraph');
 
       fs.writeFileSync('/tmp/test-dep-graph.json', JSON.stringify(depGraph.toJSON(), null, 2));
 

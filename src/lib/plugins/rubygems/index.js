@@ -1,4 +1,5 @@
 var repoInspectors = require('./inspectors');
+var gemfileLockToDependencies = require('./gemfile-lock-to-dependencies');
 
 module.exports = {
   inspect: inspect,
@@ -10,8 +11,12 @@ function inspect(root, targetFile) {
       var pkg = {
         name: specs.packageName,
         targetFile: specs.targetFile,
-        files: specs.files,
       };
+      var gemfileLockBase64 = specs.files.gemfileLock.contents;
+      var gemfileLockContents = Buffer.from(gemfileLockBase64, 'base64').toString();
+      console.time('gemfileLockToDependencies');
+      pkg.dependencies = gemfileLockToDependencies(gemfileLockContents);
+      console.timeEnd('gemfileLockToDependencies');
       return {
         plugin: {
           name: 'bundled:rubygems',
