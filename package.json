@@ -1,5 +1,6 @@
 {
   "name": "snyk",
+  "version": "0.0.0",
   "description": "snyk library and cli utility",
   "main": "dist/lib/index.js",
   "files": [
