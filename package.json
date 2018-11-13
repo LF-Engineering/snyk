@@ -11,7 +11,8 @@
     "SECURITY.md",
     "README.md",
     "Contributor-Agreement.md",
-    ".snyk"
+    ".snyk",
+    "src"
   ],
   "directories": {
     "test": "test"
